@@ -103,9 +103,11 @@ dis = Discriminator(herm, system_size)
 
 f = compute_fidelity(gen,zero_state,real_state)
 
+'''
 optional term, this is for controlling the initial fidelity is small.
 while(compute_fidelity(gen,zero_state,real_state)>0.5):
     gen.reset_angles()
+'''
 while(compute_fidelity(gen,zero_state,real_state)<0.001):
   gen.reset_angles()
 
