@@ -40,7 +40,7 @@ def Identity(size):
     """
     mat = 1
     for i in range(size):
-    mat = np.kron(Ide, mat)
+        mat = np.kron(Ide, mat)
     return mat
     
 

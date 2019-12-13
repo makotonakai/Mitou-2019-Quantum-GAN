@@ -1,3 +1,4 @@
+from qcircuit import *
 # The whole quantum circuit
 matrix = Identity(3)
 matrix = np.matmul(H(3,1,np.pi,False), matrix)
