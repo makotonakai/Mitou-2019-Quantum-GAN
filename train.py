@@ -32,7 +32,7 @@ def real_state_matrix(size):
   matrix = np.matmul(CNOT(size,1,0,np.pi,False), matrix)
   matrix = np.matmul(RZ(size,0,-np.pi/4,False), matrix)
   matrix = np.matmul(H(size,0,np.pi,False), matrix)
-  
+
   matrix = np.matmul(X(size,1,np.pi,False), matrix)
 
   matrix = np.matmul(H(size,0,np.pi,False), matrix)
@@ -48,7 +48,7 @@ def real_state_matrix(size):
   return matrix
 
 
-def construct_qcircuit(qc,size,layer):
+def construct_qcircuit(qc,size):
     '''
         the function to construct quantum circuit of generator
     :param qc:
@@ -56,28 +56,28 @@ def construct_qcircuit(qc,size,layer):
     :return:
     '''
 
-    qc.add_gate(Quantum_Gate("Y", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("Y", 1, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("Y", 2, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("Z", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("X", 1, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("CNOT", 1, 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("Z", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("CNOT", 2, 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("Z", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("CNOT", 1, 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("Z", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("X", 1, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("Y", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("Y", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("Z", 0, angle=0.2500 * np.pi))
-    qc.add_gate(Quantum_Gate("CNOT", 1, 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("Z", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("CNOT", 2, 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("Z", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("CNOT", 1, 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("Z", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("Y", 0, angle=0.5000 * np.pi))
+    qc.add_gate(Quantum_Gate("H", 1))
+    qc.add_gate(Quantum_Gate("Y", 1))
+    qc.add_gate(Quantum_Gate("Y", 2))
+    qc.add_gate(Quantum_Gate("Z", 0))
+    qc.add_gate(Quantum_Gate("X", 1))
+    qc.add_gate(Quantum_Gate("CNOT", 1, 0))
+    qc.add_gate(Quantum_Gate("Z", 0))
+    qc.add_gate(Quantum_Gate("CNOT", 2, 0))
+    qc.add_gate(Quantum_Gate("Z", 0))
+    qc.add_gate(Quantum_Gate("CNOT", 1, 0))
+    qc.add_gate(Quantum_Gate("Z", 0))
+    qc.add_gate(Quantum_Gate("X", 1))
+    qc.add_gate(Quantum_Gate("Y", 0))
+    qc.add_gate(Quantum_Gate("Y", 0))
+    qc.add_gate(Quantum_Gate("Z", 0))
+    qc.add_gate(Quantum_Gate("CNOT", 1, 0))
+    qc.add_gate(Quantum_Gate("Z", 0))
+    qc.add_gate(Quantum_Gate("CNOT", 2, 0))
+    qc.add_gate(Quantum_Gate("Z", 0))
+    qc.add_gate(Quantum_Gate("CNOT", 1, 0))
+    qc.add_gate(Quantum_Gate("Z", 0))
+    qc.add_gate(Quantum_Gate("Y", 0))
 
     theta = np.random.random(len(qc.gates))
     for i in range(len(qc.gates)):

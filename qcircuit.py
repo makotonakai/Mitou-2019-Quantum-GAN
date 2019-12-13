@@ -45,13 +45,12 @@ def Identity(size):
     
 
 # 1量子ビットゲート
-def X(size, qubit, param, is_grad):
+def X(size, qubit, is_grad):
     """
     Xゲート
     args:
         size: int 量子ビット数
         qubit: int Xゲートを掛ける量子ビットのインデックス
-        param: float 回転角
         is_grad: bool 微分されているかどうか されていればTrue
         
     return: np.matrix qubit番目の量子ビットにXゲートを掛けるための行列
@@ -65,13 +64,12 @@ def X(size, qubit, param, is_grad):
     return mat
     
 
-def Y(size, qubit, param, is_grad):
+def Y(size, qubit, is_grad):
     """
     Yゲート
     args:
         size: int 量子ビット数
         qubit: int Yゲートを掛ける量子ビットのインデックス
-        param: float 回転角
         is_grad: bool 微分されているかどうか されていればTrue
         
     return: np.matrix qubit番目の量子ビットにYゲートを掛けるための行列
@@ -85,7 +83,7 @@ def Y(size, qubit, param, is_grad):
     return mat
     
 
-def Z(size, qubit, param, is_grad):
+def Z(size, qubit, is_grad):
     """
     Zゲート
     args:
@@ -105,13 +103,12 @@ def Z(size, qubit, param, is_grad):
     return mat
     
 
-def H(size, qubit, param, is_grad):
+def H(size, qubit, is_grad):
    """
     Hゲート
     args:
         size: int 量子ビット数
         qubit: int Hadamardゲートを掛ける量子ビットのインデックス
-        param: float 回転角
         is_grad: bool 微分されているかどうか されていればTrue
         
     return: np.matrix qubit番目の量子ビットにHadamardゲートを掛けるための行列
@@ -160,7 +157,7 @@ def find_string_in_qiskit_order(size, string):
     return index
     
 
-def CNOT(nqubits, qubit1, qubit2, param, is_grad):
+def CNOT(nqubits, qubit1, qubit2, is_grad):
     """
     Identityゲート
     args:
@@ -210,7 +207,7 @@ def CNOT(nqubits, qubit1, qubit2, param, is_grad):
     return np.matrix(mat)
     
 
-def CNOT_Rotation(size, qubit1, qubit2, param, is_grad):
+def CNOT_Rotation(size, qubit1, qubit2, is_grad):
     """
     Identityゲート
     args:
@@ -218,7 +215,7 @@ def CNOT_Rotation(size, qubit1, qubit2, param, is_grad):
         
     return: np.matrix (2**nqubits)x(2**nqubits)の行列
     """
-    matrix = CNOT(size, qubit1, qubit2, param, is_grad)
+    matrix = CNOT(size, qubit1, qubit2, is_grad)
     return matrix
     
 
@@ -395,19 +392,19 @@ class Quantum_Gate:
             return RY(size, self.qubit1, param, is_grad)
 
         elif (self.name == "Z"):
-            return Z(size, self.qubit1, param, is_grad)
+            return Z(size, self.qubit1, is_grad)
 
         elif (self.name == "X"):
-            return X(size, self.qubit1, param, is_grad)
+            return X(size, self.qubit1, is_grad)
 
         elif (self.name == "Y"):
-            return Y(size, self.qubit1, param, is_grad)
+            return Y(size, self.qubit1, is_grad)
             
         elif (self.name == "H"):
-            return Hadamard(size, self.qubit1)
+            return Hadamard(size, self.qubit1, is_grad)
 
         elif (self.name == "CNOT"):
-            return CNOT_Rotation(size, self.qubit1, self.qubit2, param, is_grad)
+            return CNOT_Rotation(size, self.qubit1, self.qubit2, is_grad)
         else:
             raise ValueError("Gate is not defined")
 
@@ -435,32 +432,29 @@ class Quantum_Gate:
                 param = param_table[self.angle]
 
         elif (self.name == "RZ"):
-            return RZ(size, self.qubit1, param, is_grad)
+            return RZ(size, self.qubit1, is_grad)
 
         elif (self.name == "RX"):
-            return RX(size, self.qubit1, param, is_grad)
+            return RX(size, self.qubit1, is_grad)
 
         elif (self.name == "RY"):
-            return RY(size, self.qubit1, param, is_grad)
+            return RY(size, self.qubit1, is_grad)
 
         elif (self.name == "Z"):
-            return Z(size, self.qubit1, param, is_grad)
+            return Z(size, self.qubit1, is_grad)
 
         elif (self.name == "X"):
-            return X(size, self.qubit1, param, is_grad)
+            return X(size, self.qubit1, is_grad)
 
         elif (self.name == "Y"):
-            return Y(size, self.qubit1, param, is_grad)
+            return Y(size, self.qubit1, is_grad)
         
         elif (self.name == "H"):
-            return Hadamard(size, self.qubit1, param, is_grad)
-
-        elif (self.name == "G"):
-            return Global_phase(size, param, is_grad)
-
+            return Hadamard(size, self.qubit1, is_grad)
+            
         elif (self.name == "CNOT"):
             # return mCNOT(size, self.qubit1, self.qubit2)
-            return CNOT_Rotation(size, self.qubit1, self.qubit2, param, is_grad)
+            return CNOT_Rotation(size, self.qubit1, self.qubit2, is_grad)
 
         else:
             raise ValueError("Gate is not defined")
