@@ -1,4 +1,10 @@
-# The whole quantum circuit
+"""
+test.py: 学習データをエンコードする関数
+
+"""
+
+from qcircuit import X, H, RZ, CNOT
+
 matrix = Identity(3)
 matrix = np.matmul(H(3,1,np.pi,False), matrix)
 matrix = np.matmul(H(3,2,np.pi,False), matrix)
