@@ -431,7 +431,7 @@ class Discriminator:
         return grad_phi
 
     def _grad_beta(self, gen, real_state):
-         """
+        """
         betaの各パラメータの勾配を求める関数
         
         Parameters
