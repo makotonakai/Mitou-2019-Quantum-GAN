@@ -50,19 +50,10 @@ def Identity(size):
 def X(size, qubit, is_grad):
     """
     Xゲート
-<<<<<<< HEAD:qcircuit.py
     args:
         size: int 量子ビット数
         qubit: int Xゲートを掛ける量子ビットのインデックス
         is_grad: bool 微分されているかどうか されていればTrue
-=======
-    
-    Parameters
-        size  [int] 回路全体の量子ビット数
-        qubit [int] Xゲートを掛ける量子ビットのインデックス
-        param [float] 回転角
-        is_grad [bool] 微分されているかどうか されていればTrue
->>>>>>> 71652ce8cfacc59b882f42e5280e15b9277bd4f0:QWGAN_author_code/qcircuit.py
         
     Return 
         mat [np.matrix] qubit番目の量子ビットにXゲートを掛けるための行列
@@ -79,19 +70,10 @@ def X(size, qubit, is_grad):
 def Y(size, qubit, is_grad):
     """
     Yゲート
-<<<<<<< HEAD:qcircuit.py
     args:
         size: int 量子ビット数
         qubit: int Yゲートを掛ける量子ビットのインデックス
         is_grad: bool 微分されているかどうか されていればTrue
-=======
-    
-    Parameters
-        size  [int] 回路全体の量子ビット数
-        qubit [int] Yゲートを掛ける量子ビットのインデックス
-        param [float] 回転角
-        is_grad [bool] 微分されているかどうか されていればTrue
->>>>>>> 71652ce8cfacc59b882f42e5280e15b9277bd4f0:QWGAN_author_code/qcircuit.py
         
     Return 
         mat [np.matrix] qubit番目の量子ビットにYゲートを掛けるための行列
@@ -112,7 +94,6 @@ def Z(size, qubit, is_grad):
     Parameters
         size  [int] 回路全体の量子ビット数
         qubit [int] Zゲートを掛ける量子ビットのインデックス
-        param [float] 回転角
         is_grad [bool] 微分されているかどうか されていればTrue
         
     Return 
@@ -130,19 +111,10 @@ def Z(size, qubit, is_grad):
 def H(size, qubit, is_grad):
    """
     Hゲート
-<<<<<<< HEAD:qcircuit.py
     args:
         size: int 量子ビット数
         qubit: int Hadamardゲートを掛ける量子ビットのインデックス
         is_grad: bool 微分されているかどうか されていればTrue
-=======
-    
-    Parameters
-        size  [int] 回路全体の量子ビット数
-        qubit [int] Hゲートを掛ける量子ビットのインデックス
-        param [float] 回転角
-        is_grad [bool] 微分されているかどうか されていればTrue
->>>>>>> 71652ce8cfacc59b882f42e5280e15b9277bd4f0:QWGAN_author_code/qcircuit.py
         
     Return 
         mat [np.matrix] qubit番目の量子ビットにHゲートを掛けるための行列
@@ -204,7 +176,6 @@ def CNOT(nqubits, qubit1, qubit2, is_grad):
         size    [int]   回路全体の量子ビット数
         qubit1  [int]   control量子ビットのindex
         qubit2  [int]   target量子ビットのindex
-        param   [float] 回転角
         is_grad [bool]  微分されているかどうか
         
     Return
@@ -252,21 +223,6 @@ def CNOT(nqubits, qubit1, qubit2, is_grad):
     return np.matrix(mat)
     
 
-<<<<<<< HEAD:qcircuit.py
-def CNOT_Rotation(size, qubit1, qubit2, is_grad):
-    """
-    Identityゲート
-    args:
-        nqubits: int 量子ビット数
-        
-    return: np.matrix (2**nqubits)x(2**nqubits)の行列
-    """
-    matrix = CNOT(size, qubit1, qubit2, is_grad)
-    return matrix
-    
-
-=======
->>>>>>> 71652ce8cfacc59b882f42e5280e15b9277bd4f0:QWGAN_author_code/qcircuit.py
 def single_RX(theta):
     """
     単体のRXゲート
@@ -474,11 +430,7 @@ class Quantum_Gate:
             return Hadamard(size, self.qubit1, is_grad)
 
         elif (self.name == "CNOT"):
-<<<<<<< HEAD:qcircuit.py
-            return CNOT_Rotation(size, self.qubit1, self.qubit2, is_grad)
-=======
             return CNOT(size, self.qubit1, self.qubit2, param, is_grad)
->>>>>>> 71652ce8cfacc59b882f42e5280e15b9277bd4f0:QWGAN_author_code/qcircuit.py
         else:
             raise ValueError("Gate is not defined")
 
@@ -533,11 +485,7 @@ class Quantum_Gate:
             
         elif (self.name == "CNOT"):
             # return mCNOT(size, self.qubit1, self.qubit2)
-<<<<<<< HEAD:qcircuit.py
-            return CNOT_Rotation(size, self.qubit1, self.qubit2, is_grad)
-=======
             return CNOT(size, self.qubit1, self.qubit2, param, is_grad)
->>>>>>> 71652ce8cfacc59b882f42e5280e15b9277bd4f0:QWGAN_author_code/qcircuit.py
 
         else:
             raise ValueError("Gate is not defined")
