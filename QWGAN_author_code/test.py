@@ -1,15 +1,5 @@
-<<<<<<< HEAD:test.py
 from qcircuit import *
 # The whole quantum circuit
-=======
-"""
-test.py: 学習データをエンコードする関数
-
-"""
-
-from qcircuit import X, H, RZ, CNOT
-
->>>>>>> 71652ce8cfacc59b882f42e5280e15b9277bd4f0:QWGAN_author_code/test.py
 matrix = Identity(3)
 matrix = np.matmul(H(3,1,np.pi,False), matrix)
 matrix = np.matmul(H(3,2,np.pi,False), matrix)
