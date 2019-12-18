@@ -3,6 +3,8 @@
 
 """
 
+import numpy as np
+
 label = 'pure_state'
 
 # 量子ビット数

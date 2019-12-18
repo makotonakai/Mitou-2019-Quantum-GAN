@@ -60,10 +60,10 @@ def X(size, qubit, is_grad):
     """
     mat = 1
     for i in range(size):
-    if i == qubit:
-      mat = np.kron(Pauli_X, mat)
-    else:
-      mat = np.kron(Ide, mat)
+        if i == qubit:
+            mat = np.kron(Pauli_X, mat)
+        else:
+            mat = np.kron(Ide, mat)
     return mat
     
 
@@ -80,10 +80,10 @@ def Y(size, qubit, is_grad):
     """
     mat = 1
     for i in range(size):
-    if i == qubit:
-      mat = np.kron(Pauli_Y, mat)
-    else:
-      mat = np.kron(Ide, mat)
+        if i == qubit:
+            mat = np.kron(Pauli_Y, mat)
+        else:
+            mat = np.kron(Ide, mat)
     return mat
     
 
@@ -101,15 +101,15 @@ def Z(size, qubit, is_grad):
     """
     mat = 1
     for i in range(size):
-    if i == qubit:
-      mat = np.kron(Pauli_Z, mat)
-    else:
-      mat = np.kron(Ide, mat)
+        if i == qubit:
+            mat = np.kron(Pauli_Z, mat)
+        else:
+            mat = np.kron(Ide, mat)
     return mat
     
 
 def H(size, qubit, is_grad):
-   """
+    """
     Hゲート
     args:
         size: int 量子ビット数
@@ -121,10 +121,10 @@ def H(size, qubit, is_grad):
     """
     mat = 1
     for i in range(size):
-    if i == qubit:
-      mat = np.kron(Hadamard, mat)
-    else:
-      mat = np.kron(Ide, mat)
+        if i == qubit:
+            mat = np.kron(Hadamard, mat)
+        else:
+            mat = np.kron(Ide, mat)
     return mat
     
 
@@ -144,7 +144,7 @@ def qiskit_order(size):
     for i in binary:
         for j in binary:
             for k in binary:
-        states.append(k+j+i)
+                states.append(k+j+i)
     return states
 
 def find_string_in_qiskit_order(size, string):
@@ -161,10 +161,10 @@ def find_string_in_qiskit_order(size, string):
     order = qiskit_order(size)
     index = 0
     if string not in order:
-    print("Put another string")
+        print("Put another string")
     for num in range(len(order)):
-    if order[num] == string:
-      index += num
+        if order[num] == string:
+            index += num
     return index
     
 
@@ -182,7 +182,7 @@ def CNOT(nqubits, qubit1, qubit2, is_grad):
         mat [np.matrix] (2**nqubits)x(2**nqubits)の行列
     """
     if qubit1 > nqubits or qubit2 > nqubits or qubit1 == qubit2:
-    print("You entered the wrong pair of qubits")
+        print("You entered the wrong pair of qubits")
 
     # 2進数の長さ
     length = len(bin(nqubits)[2:])
@@ -195,30 +195,30 @@ def CNOT(nqubits, qubit1, qubit2, is_grad):
     # 制御されるすべての状態
     target_states = []
     for state in controlled_states:
-    # target qubitが0の時、1に反転させる
-    if state[qubit2] == '0':
-      state_list = list(state)
-      state_list[qubit2] = '1'
-      target_str = "".join(state_list)
-      # target_int = int(target_str,2)
-    # target qubitが1の時、0に反転させる
-    else:
-      state_list = list(state)
-      state_list[qubit2] = '0'
-      target_str = "".join(state_list)
-      # target_int = int(target_str,2)
-    target_states.append(target_str)
+        # target qubitが0の時、1に反転させる
+        if state[qubit2] == '0':
+            state_list = list(state)
+            state_list[qubit2] = '1'
+            target_str = "".join(state_list)
+        # target_int = int(target_str,2)
+        # target qubitが1の時、0に反転させる
+        else:
+            state_list = list(state)
+            state_list[qubit2] = '0'
+            target_str = "".join(state_list)
+            # target_int = int(target_str,2)
+        target_states.append(target_str)
     # target_states.append(target_int)
     # #(2**nqubits)^2の正方行列
     mat = Identity(nqubits)
     mat = np.array(mat)
     for control, target in zip(controlled_states, target_states):
-    cont_int = find_string_in_qiskit_order(nqubits,control)
-    tar_int = find_string_in_qiskit_order(nqubits,target)
-    mat[cont_int][cont_int] = 0
-    mat[cont_int][tar_int] = 1
-    mat[tar_int][cont_int] = 1
-    mat[tar_int][tar_int] = 0
+        cont_int = find_string_in_qiskit_order(nqubits,control)
+        tar_int = find_string_in_qiskit_order(nqubits,target)
+        mat[cont_int][cont_int] = 0
+        mat[cont_int][tar_int] = 1
+        mat[tar_int][cont_int] = 1
+        mat[tar_int][tar_int] = 0
 
     return np.matrix(mat)
     

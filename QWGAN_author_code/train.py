@@ -3,13 +3,17 @@
 """
 import time
 from datetime import datetime
-from model import Generator, Discriminator, compute_fidelity, compute_cost, get_zero_state
+from model import Generator, Discriminator, compute_fidelity, compute_cost
 from qcircuit import *
 import config as cf
 from utils import get_zero_state
 import matplotlib.pyplot as plt
 import itertools
+import numpy as np
+
 np.random.seed()
+system_size = cf.system_size
+
 def real_state_matrix(size):
     """
     学習データの量子状態の行列を返す関数

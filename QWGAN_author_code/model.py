@@ -4,6 +4,9 @@
 """
 
 from scipy.linalg import expm
+import numpy as np
+from utils import get_zero_state
+from config import *
 
 np.random.seed()
 
@@ -24,6 +27,7 @@ def compute_cost(gen, dis, real_state):
     G = gen.getGen()
     psi = dis.getPsi()
     phi = dis.getPhi()
+    lamb = np.float(2)
 
     zero_state = get_zero_state(gen.size)
 
@@ -149,6 +153,7 @@ class Generator:
 
         phi = dis.getPhi()
         psi = dis.getPsi()
+        lamb = np.float(2)
 
         zero_state = get_zero_state(self.size)
 
@@ -350,6 +355,7 @@ class Discriminator:
         G = gen.getGen()
         psi = self.getPsi()
         phi = self.getPhi()
+        lamb = np.float(2)
 
         zero_state = get_zero_state(self.size)
         fake_state = np.matmul(G , zero_state)
