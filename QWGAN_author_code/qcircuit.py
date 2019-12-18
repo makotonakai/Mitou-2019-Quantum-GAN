@@ -9,7 +9,7 @@ Original file is located at
 #!/usr/bin/env python
 
 """
-    qcircuit.py: including base components and definition of quantum circuit simulation.
+    qcircuit.py: 量子ゲートと量子回路の関数・クラス
 
 """
 import traceback
@@ -33,10 +33,12 @@ param_table = dict()
 def Identity(size):
     """
     Identityゲート
-    args:
-        size: int 量子ビット数
+    
+    Parameters
+        size [int]量子ビット数
         
-    return: np.matrix (2**size)x(2**size)のIゲート
+    Return 
+        mat [np.matrix] (2**size)x(2**size)のIゲート
     """
     mat = 1
     for i in range(size):
@@ -48,12 +50,22 @@ def Identity(size):
 def X(size, qubit, is_grad):
     """
     Xゲート
+<<<<<<< HEAD:qcircuit.py
     args:
         size: int 量子ビット数
         qubit: int Xゲートを掛ける量子ビットのインデックス
         is_grad: bool 微分されているかどうか されていればTrue
+=======
+    
+    Parameters
+        size  [int] 回路全体の量子ビット数
+        qubit [int] Xゲートを掛ける量子ビットのインデックス
+        param [float] 回転角
+        is_grad [bool] 微分されているかどうか されていればTrue
+>>>>>>> 71652ce8cfacc59b882f42e5280e15b9277bd4f0:QWGAN_author_code/qcircuit.py
         
-    return: np.matrix qubit番目の量子ビットにXゲートを掛けるための行列
+    Return 
+        mat [np.matrix] qubit番目の量子ビットにXゲートを掛けるための行列
     """
     mat = 1
     for i in range(size):
@@ -67,12 +79,22 @@ def X(size, qubit, is_grad):
 def Y(size, qubit, is_grad):
     """
     Yゲート
+<<<<<<< HEAD:qcircuit.py
     args:
         size: int 量子ビット数
         qubit: int Yゲートを掛ける量子ビットのインデックス
         is_grad: bool 微分されているかどうか されていればTrue
+=======
+    
+    Parameters
+        size  [int] 回路全体の量子ビット数
+        qubit [int] Yゲートを掛ける量子ビットのインデックス
+        param [float] 回転角
+        is_grad [bool] 微分されているかどうか されていればTrue
+>>>>>>> 71652ce8cfacc59b882f42e5280e15b9277bd4f0:QWGAN_author_code/qcircuit.py
         
-    return: np.matrix qubit番目の量子ビットにYゲートを掛けるための行列
+    Return 
+        mat [np.matrix] qubit番目の量子ビットにYゲートを掛けるための行列
     """
     mat = 1
     for i in range(size):
@@ -86,13 +108,15 @@ def Y(size, qubit, is_grad):
 def Z(size, qubit, is_grad):
     """
     Zゲート
-    args:
-        size: int 量子ビット数
-        qubit: int Zゲートを掛ける量子ビットのインデックス
-        param: float 回転角
-        is_grad: bool 微分されているかどうか されていればTrue
+    
+    Parameters
+        size  [int] 回路全体の量子ビット数
+        qubit [int] Zゲートを掛ける量子ビットのインデックス
+        param [float] 回転角
+        is_grad [bool] 微分されているかどうか されていればTrue
         
-    return: np.matrix qubit番目の量子ビットにZゲートを掛けるための行列
+    Return 
+        mat [np.matrix] qubit番目の量子ビットにZゲートを掛けるための行列
     """
     mat = 1
     for i in range(size):
@@ -106,12 +130,22 @@ def Z(size, qubit, is_grad):
 def H(size, qubit, is_grad):
    """
     Hゲート
+<<<<<<< HEAD:qcircuit.py
     args:
         size: int 量子ビット数
         qubit: int Hadamardゲートを掛ける量子ビットのインデックス
         is_grad: bool 微分されているかどうか されていればTrue
+=======
+    
+    Parameters
+        size  [int] 回路全体の量子ビット数
+        qubit [int] Hゲートを掛ける量子ビットのインデックス
+        param [float] 回転角
+        is_grad [bool] 微分されているかどうか されていればTrue
+>>>>>>> 71652ce8cfacc59b882f42e5280e15b9277bd4f0:QWGAN_author_code/qcircuit.py
         
-    return: np.matrix qubit番目の量子ビットにHadamardゲートを掛けるための行列
+    Return 
+        mat [np.matrix] qubit番目の量子ビットにHゲートを掛けるための行列
     """
     mat = 1
     for i in range(size):
@@ -125,10 +159,12 @@ def H(size, qubit, is_grad):
 def qiskit_order(size):
     """
     行列の順番をqiskitのstatevectorのインデックスに合わせる
-    args:
-        size: int 量子ビット数
+    
+    Parameters
+        size [int] 回路全体の量子ビット数
         
-    return: statevectorの順番
+    Return
+        states [list] statevectorの順番
     """
     states = []
     binary = ['0', '1']
@@ -141,11 +177,14 @@ def qiskit_order(size):
 
 def find_string_in_qiskit_order(size, string):
     """
-    Identityゲート
-    args:
-        nqubits: int 量子ビット数
+    入力(string)がqiskitのstatevectorで何番目にあるか調べるもの
+    
+    Parameters
+        size [int] 回路全体の量子ビット数
+        string [str] '0'と'1'で構成された文字列
         
-    return: np.matrix (2**nqubits)x(2**nqubits)の行列
+    Return
+        index [int] stringがstatevectorの中で何番目か
     """
     order = qiskit_order(size)
     index = 0
@@ -159,11 +198,17 @@ def find_string_in_qiskit_order(size, string):
 
 def CNOT(nqubits, qubit1, qubit2, is_grad):
     """
-    Identityゲート
-    args:
-        nqubits: int 量子ビット数
+    CNOTゲート
+    
+    Parameters
+        size    [int]   回路全体の量子ビット数
+        qubit1  [int]   control量子ビットのindex
+        qubit2  [int]   target量子ビットのindex
+        param   [float] 回転角
+        is_grad [bool]  微分されているかどうか
         
-    return: np.matrix (2**nqubits)x(2**nqubits)の行列
+    Return
+        mat [np.matrix] (2**nqubits)x(2**nqubits)の行列
     """
     if qubit1 > nqubits or qubit2 > nqubits or qubit1 == qubit2:
     print("You entered the wrong pair of qubits")
@@ -207,6 +252,7 @@ def CNOT(nqubits, qubit1, qubit2, is_grad):
     return np.matrix(mat)
     
 
+<<<<<<< HEAD:qcircuit.py
 def CNOT_Rotation(size, qubit1, qubit2, is_grad):
     """
     Identityゲート
@@ -219,13 +265,16 @@ def CNOT_Rotation(size, qubit1, qubit2, is_grad):
     return matrix
     
 
+=======
+>>>>>>> 71652ce8cfacc59b882f42e5280e15b9277bd4f0:QWGAN_author_code/qcircuit.py
 def single_RX(theta):
     """
-    Identityゲート
-    args:
-        nqubits: int 量子ビット数
+    単体のRXゲート
+    Parameters
+        theta [float] 回転角
         
-    return: np.matrix (2**nqubits)x(2**nqubits)の行列
+    Return
+        mat [np.matrix] RXゲート(回転角 theta)
     """
     sin = np.sin(theta/2)
     cos = np.cos(theta/2)
@@ -236,11 +285,12 @@ def single_RX(theta):
 
 def single_RY(theta):
     """
-    Identityゲート
-    args:
-        nqubits: int 量子ビット数
+    単体のRYゲート
+    Parameters
+        theta [float] 回転角
         
-    return: np.matrix (2**nqubits)x(2**nqubits)の行列
+    Return
+        mat [np.matrix] RYゲート(回転角 theta)
     """
     sin = np.sin(theta/2)
     cos = np.cos(theta/2)
@@ -251,11 +301,12 @@ def single_RY(theta):
 
 def single_RZ(theta):
     """
-    Identityゲート
-    args:
-        nqubits: int 量子ビット数
+    単体のRZゲート
+    Parameters
+        theta [float] 回転角
         
-    return: np.matrix (2**nqubits)x(2**nqubits)の行列
+    Return
+        mat [np.matrix] RZゲート(回転角 theta)
     """
     mat = np.array([[1,0],[0,np.exp(1J*theta)]])
     mat = np.matrix(mat)
@@ -263,11 +314,15 @@ def single_RZ(theta):
 
 def RX(size, qubit, param, is_grad):
     """
-    Identityゲート
-    args:
-        nqubits: int 量子ビット数
+    RXゲート
+    Parameters
+        size    [int] 回路全体の量子ビット数
+        qubit   [int] RXゲートをかける量子ビットのインデックス
+        param   [float] 回転角
+        is_grad [bool] 微分されていればTrue、されていなければFalse
         
-    return: np.matrix (2**nqubits)x(2**nqubits)の行列
+    Return
+        matrix [np.matrix] qubit番目の量子ビットにRXゲート(回転角 param)をかけるための行列
     """
     matrix = 1
     for i in range(size):
@@ -287,11 +342,15 @@ def RX(size, qubit, param, is_grad):
 
 def RY(size, qubit, param, is_grad):
     """
-    Identityゲート
-    args:
-        nqubits: int 量子ビット数
+    RYゲート
+    Parameters
+        size    [int] 回路全体の量子ビット数
+        qubit   [int] RYゲートをかける量子ビットのインデックス
+        param   [float] 回転角
+        is_grad [bool] 微分されていればTrue、されていなければFalse
         
-    return: np.matrix (2**nqubits)x(2**nqubits)の行列
+    Return
+        matrix [np.matrix] qubit番目の量子ビットにRYゲート(回転角 param)をかけるための行列
     """
     matrix = 1
     for i in range(size):
@@ -311,11 +370,15 @@ def RY(size, qubit, param, is_grad):
 
 def RZ(size, qubit, param, is_grad):
     """
-    Identityゲート
-    args:
-        nqubits: int 量子ビット数
+    RZゲート
+    Parameters
+        size    [int] 回路全体の量子ビット数
+        qubit   [int] RZゲートをかける量子ビットのインデックス
+        param   [float] 回転角
+        is_grad [bool] 微分されていればTrue、されていなければFalse
         
-    return: np.matrix (2**nqubits)x(2**nqubits)の行列
+    Return
+        matrix [np.matrix] qubit番目の量子ビットにRZゲート(回転角 param)をかけるための行列
     """
     matrix = 1
     for i in range(size):
@@ -336,11 +399,15 @@ def RZ(size, qubit, param, is_grad):
 class Quantum_Gate:
     def __init__(self, name, qubit1=None, qubit2=None, **kwarg):
         """
-        Identityゲート
-        args:
-            nqubits: int 量子ビット数
+        量子ゲートのクラス
         
-        return: np.matrix (2**nqubits)x(2**nqubits)の行列
+        Parameters
+            name   [str] ゲートの名前
+            qubit1 [int] 量子ゲートの1番目の量子ビット(1量子ビットゲートの量子ビット)
+            qubit2 [int] 量子ゲートの2番目の量子ビット
+            
+            **kwarg
+            -angle [float] 回転角
         """
         self.name = name
         self.qubit1 = qubit1
@@ -370,11 +437,14 @@ class Quantum_Gate:
 
     def matrix_representation(self, size, is_grad):
         """
-        Identityゲート
-        args:
-            nqubits: int 量子ビット数
+        ゲートの行列表現
         
-        return: np.matrix (2**nqubits)x(2**nqubits)の行列
+        Parameters
+            size    [int] 回路全体の量子ビット数
+            is_grad [bool] 微分していればTrue、していなければFalse
+        
+        Return
+            matrix [np.matrix] qubit1(とqubit2)にゲートをかけるための行列
         """
         if self.angle != None:
             try:
@@ -404,17 +474,26 @@ class Quantum_Gate:
             return Hadamard(size, self.qubit1, is_grad)
 
         elif (self.name == "CNOT"):
+<<<<<<< HEAD:qcircuit.py
             return CNOT_Rotation(size, self.qubit1, self.qubit2, is_grad)
+=======
+            return CNOT(size, self.qubit1, self.qubit2, param, is_grad)
+>>>>>>> 71652ce8cfacc59b882f42e5280e15b9277bd4f0:QWGAN_author_code/qcircuit.py
         else:
             raise ValueError("Gate is not defined")
 
     def matrix_representation_shift_phase(self, size, is_grad, signal):
         """
-        Identityゲート
-        args:
-            nqubits: int 量子ビット数
+        勾配を求める時に使うゲートの行列表現
+        位相ずらす
         
-        return: np.matrix (2**nqubits)x(2**nqubits)の行列
+        Parameters
+            size    [int] 回路全体の量子ビット数
+            is_grad [bool] 微分していればTrue、していなければFalse
+            signal  [char] π/4足す時は'+'、π/4引く時は'-'、何もしない時は'0'
+        
+        Return
+            matrix [np.matrix] qubit1(とqubit2)にゲートをかけるための行列
         """
         if self.angle != None:
             try:
@@ -454,7 +533,11 @@ class Quantum_Gate:
             
         elif (self.name == "CNOT"):
             # return mCNOT(size, self.qubit1, self.qubit2)
+<<<<<<< HEAD:qcircuit.py
             return CNOT_Rotation(size, self.qubit1, self.qubit2, is_grad)
+=======
+            return CNOT(size, self.qubit1, self.qubit2, param, is_grad)
+>>>>>>> 71652ce8cfacc59b882f42e5280e15b9277bd4f0:QWGAN_author_code/qcircuit.py
 
         else:
             raise ValueError("Gate is not defined")
@@ -464,9 +547,10 @@ class Quantum_Circuit:
 
     def __init__(self, size, name):
         """
-        Identityゲート
-        args:
-            nqubits: int 量子ビット数
+        量子回路のクラス
+        Parameter
+            size [int] 量子ビット数
+            name [str] 量子ゲート名
         
         return: np.matrix (2**nqubits)x(2**nqubits)の行列
         """
@@ -477,11 +561,9 @@ class Quantum_Circuit:
 
     def check_ciruit(self):
         """
-        Identityゲート
-        args:
-            nqubits: int 量子ビット数
         
-        return: np.matrix (2**nqubits)x(2**nqubits)の行列
+        量子ゲート表記が正しいか調べる関数
+        
         """
         for j,gate in zip(range(len(self.gates)),self.gates):
             if gate.qubit1!=None and gate.qubit2!=None:
@@ -495,11 +577,9 @@ class Quantum_Circuit:
 
     def get_mat_rep(self):
         """
-        Identityゲート
-        args:
-            nqubits: int 量子ビット数
         
-        return: np.matrix (2**nqubits)x(2**nqubits)の行列
+        量子回路のゲート全体の行列を取得する関数
+        
         """
         matrix = Identity(self.size)
         for gate in self.gates:
@@ -509,15 +589,25 @@ class Quantum_Circuit:
         
 
     def get_grad_mat_rep(self, index, signal='none', type='matrix_multiplication'):
-        '''
-            matrix multipliction: explicit way to calculate the gradient using matrix multiplication
-            shift_phase: generate two quantum circuit to calculate the gradient
-            Evaluating analytic gradients on quantum hardware
-            https://arxiv.org/pdf/1811.11184.pdf
-        :param index:
-        :param type: the type of calculate gradient
-        :return:
-        '''
+        """
+        
+        勾配を求めるために行列を計算する関数
+        
+        Parameter
+            index  [int] ゲートをかける量子ビットのインデックス
+            signal [char] π/4足す時は'+'、π/4引く時は'-'、何もしない時は'0'
+            type   [str] 勾配を求める方法
+            
+        Return
+            matrix [np.matrix] 量子回路全体の行列
+            
+        参考文献
+        matrix multipliction: explicit way to calculate the gradient using matrix multiplication
+        shift_phase: generate two quantum circuit to calculate the gradient
+        Evaluating analytic gradients on quantum hardware
+        https://arxiv.org/pdf/1811.11184.pdf
+        
+        """
         if type == 'shift_phase':
             matrix = Identity(self.size)
             for j, gate in zip(range(len(self.gates)), self.gates):
@@ -543,11 +633,14 @@ class Quantum_Circuit:
 
     def get_grad_qc(self,indx,type='0'):
         """
-        Identityゲート
-        args:
-            nqubits: int 量子ビット数
+        
+        Parameters
+            index1 [int] 1番目の量子ビット
+            index2 [int] 2番目の量子ビット
+            type   [char] π/4足す時は'+'、π/4引く時は'-'、何もしない時は'0'
         
         return: np.matrix (2**nqubits)x(2**nqubits)の行列
+        
         """
         qc_list = list()
         for j,gate in zip(range(len(self.gates)),self.gates):
@@ -572,11 +665,12 @@ class Quantum_Circuit:
 
     def add_gate(self, quantum_gate):
         """
-        Identityゲート
-        args:
-            nqubits: int 量子ビット数
         
-        return: np.matrix (2**nqubits)x(2**nqubits)の行列
+        量子回路にゲートを追加する関数
+        
+        Parameter
+            quantum_gate [QuantumGate] 追加する量子ゲート
+            
         """
         self.depth += 1
         self.gates.append(quantum_gate)
