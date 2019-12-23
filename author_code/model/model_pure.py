@@ -1,25 +1,25 @@
+#!/usr/bin/env python
+
 """
-    model.py: Generator(theta:回転角)とDiscriminator(alpha,beta:float)の関数
+    model_pure.py: the model of generator and discriminator(pure states)
 
 """
 
 from scipy.linalg import expm
+import numpy as np
+from config_pure import *
+from tools.qcircuit import Quantum_Gate, Quantum_Circuit
+from tools.utils import get_zero_state
 
 np.random.seed()
 
 def compute_cost(gen, dis, real_state):
-    """
-    
-      コスト関数の値を計算する関数  
-    
-    Parameters
-        gen        [Generator]     生成部のクラス
-        dis        [Discriminator] 判別部のクラス
-        real_state [np.matrix]     学習データの量子状態
-        
-    Return cost [float] コスト関数の値
-    
-    """
+    '''
+        calculate the loss
+    :param gen: generator(Generator)
+    :param dis: discriminator(Discriminator)
+    :return:
+    '''
 
     G = gen.getGen()
     psi = dis.getPsi()
@@ -64,86 +64,38 @@ def compute_cost(gen, dis, real_state):
 
 
 def compute_fidelity(gen, state, real_state):
-    """
-    
-    Fidelityを計算する関数
-    
-    Parameters
-        gen        [Generator]     生成部のクラス
-        dis        [Discriminator] 判別部のクラス
-        real_state [np.matrix]     学習データの量子状態
-        
-    Return cost [float] Fidelityの値ctor(array), input state
-    
-    """
+    '''
+        calculate the fidelity between target state and fake state
+    :param gen:   generator(Generator)
+    :param state: vector(array), input state
+    :return:
+    '''
     G = gen.getGen()
     fake_state = np.matmul(G , state)
-    return np.abs(np.asscalar(np.matmul(real_state.getH() , fake_state)))**2
+    return np.abs(np.asscalar(np.matmul(real_state.getH() , fake_state))) ** 2
 
 
 class Generator:
-    """
-    
-    Generatorの初期条件
-     
-         Parameters
-        
-            system_size [int]            量子回路に必要な量子ビットの数
-            qc          [QuantumCircuit] 量子回路
-            
-    """
     def __init__(self, system_size):
         self.size = system_size
         self.qc = self.init_qcircuit()
 
     def reset_angles(self):
-        """
-        
-        Generatorの角度をリセットする関数
-        
-        """
         theta = np.random.random(len(self.qc.gates))
         for i in range(len(self.qc.gates)):
             self.qc.gates[i].angle = theta[i]
 
     def init_qcircuit(self):
-        """
-        
-        量子回路を準備する関数
-        
-        """
         qcircuit = Quantum_Circuit(self.size, "generator")
         return qcircuit
 
     def set_qcircuit(self, qc):
-        """
-        
-        Generatorの量子回路を準備する関数
-        
-        """
         self.qc = qc
 
     def getGen(self):
-        """
-        
-        Generator全体の量子回路を行列に変換する関数
-        
-        """
         return self.qc.get_mat_rep()
 
     def _grad_theta(self, dis, real_state):
-        """
-        
-        Generatorの各Rotationゲートの回転角の勾配を求める関数
-        
-        Parameters
-            dis        [Discriminator] 判別部
-            real_state [np.matrix]     学習データの量子状態
-            
-        Return
-            grad [np.matrix] 各回転角の勾配
-        
-        """
 
         G = self.getGen()
 
@@ -212,15 +164,6 @@ class Generator:
         return grad
 
     def update_gen(self, dis,real_state):
-        """
-        
-        Generatorの各Rotationゲートの回転角を更新する関数
-        
-        Parameters
-            dis        [Discriminator] 判別部
-            real_state [np.matrix]     学習データの量子状態
-        
-        """
         new_angle = []
 
         grad_list = self._grad_theta(dis,real_state)
@@ -232,21 +175,7 @@ class Generator:
 
 
 class Discriminator:
-    """
-        
-        Discriminatorのコンストラクタ
-        
-        Parameters
-            herms       [list] パウリ行列のリスト　[Ide, Pauli_X, Pauli_Y, Pauli_Z]
-            system_size [int]  量子回路全体の量子ビット数
-            
-        Return
-            size  [int]  量子回路全体の量子ビット数
-            herm  [list] パウリ行列のリスト　[Ide, Pauli_X, Pauli_Y, Pauli_Z]
-            alpha [np.array] αの値のリスト
-            beta  [np.array] βの値のリスト
-            
-        """
+
     def __init__(self, herm, system_size):
         self.size = system_size
         self.herm = herm
@@ -255,30 +184,24 @@ class Discriminator:
         self._init_params()
 
     def _init_params(self):
-        """
-        
-        alphaとbetaの初期化する関数
-        
-        """
+        # initial Discriminator Parameters
+
         for i in range(self.size):
             self.alpha[i] = -1 + 2 * np.random.random(len(self.herm))
             self.beta[i] = -1 + 2 * np.random.random(len(self.herm))
 
 
     def getPsi(self):
-        """
-        
-        Psiの行列を取得する関数
-        
-        Parameters
-            size  [int]      回路全体の量子ビット数
-            herm  [list]     エルミート行列のリスト [Ide, Pauli_X, Pauli_Y, Pauli_Z]
-            alpha [np.array] αの初期値のリスト
-            
-        Return
-            psi [np.array] Psiの行列
-            
-        """
+        '''
+            get matrix representation of real part of discriminator
+        :param alpha:
+                    parameters of psi(ndarray):size = [num_qubit, 4]
+                    0: I
+                    1: X
+                    2: Y
+                    3: Z
+        :return:
+        '''
         psi = 1
         for i in range(self.size):
             psi_i = np.zeros_like(self.herm[0], dtype=complex)
@@ -288,19 +211,16 @@ class Discriminator:
         return psi
 
     def getPhi(self):
-        """
-        
-        Phiの行列を取得する関数
-        
-        Parameters
-            size  [int]      回路全体の量子ビット数
-            herm  [list]     エルミート行列のリスト [Ide, Pauli_X, Pauli_Y, Pauli_Z]
-            beta [np.array]  βの初期値のリスト
-            
-        Return
-            phi [np.array] Phiの行列
-            
-        """
+        '''
+            get matrix representation of fake part of discriminator
+        :param beta:
+                    parameters of psi(ndarray):size = [num_qubit, 4]
+                    0: I
+                    1: X
+                    2: Y
+                    3: Z
+        :return:
+        '''
         phi = 1
         for i in range(self.size):
             phi_i = np.zeros_like(self.herm[0], dtype=complex)
@@ -311,16 +231,6 @@ class Discriminator:
 
     # Psi gradients
     def _grad_psi(self, type):
-        """
-        Psiの勾配を求める関数
-        
-        Parameters
-            type [list] パウリ行列の種類 (I, X, Y, Z)
-            
-        Return
-            grad_psi [list] 各パウリ行列の勾配
-        
-        """
         grad_psi = list()
         for i in range(self.size):
             grad_psiI = 1
@@ -336,17 +246,6 @@ class Discriminator:
         return grad_psi
 
     def _grad_alpha(self, gen,real_state):
-        """
-        alphaの各パラメータの勾配を求める関数
-        
-        Parameters
-            gen [Generator] 生成部
-            real_state [np.matmul] 学習データの量子状態
-            
-        Return
-            grad_alpha [np.array] alphaの各パラメータの勾配を求める
-        
-        """
         G = gen.getGen()
         psi = self.getPsi()
         phi = self.getPhi()
@@ -406,16 +305,6 @@ class Discriminator:
 
     # Phi gradients
     def _grad_phi(self, type):
-        """
-        Phiの勾配を求める関数
-        
-        Parameters
-            type [list] エルミート行列の種類 (I, X, Y, Z)
-            
-        Return
-            grad_phi [list] 各エルミート行列の勾配
-        
-        """
         grad_phi = list()
         for i in range(self.size):
             grad_phiI = 1
@@ -431,17 +320,7 @@ class Discriminator:
         return grad_phi
 
     def _grad_beta(self, gen, real_state):
-        """
-        betaの各パラメータの勾配を求める関数
-        
-        Parameters
-            gen [Generator] 生成部
-            real_state [np.matmul] 学習データの量子状態
-            
-        Return
-            grad_beta [np.array] alphaの各パラメータの勾配を求める
-        
-        """
+
         G = gen.getGen()
         psi = self.getPsi()
         phi = self.getPhi()
@@ -496,18 +375,11 @@ class Discriminator:
             # calculate grad of reg term
             grad_reg_term[:, type] = np.asarray(gradreg_list)
 
-        grad_beta = np.real(grad_psi_term - grad_phi_term - grad_reg_term)
-        return grad_beta
+        # print("grad_beta:\n",np.real(grad_psi_term - grad_phi_term - grad_reg_term))
+        return np.real(grad_psi_term - grad_phi_term - grad_reg_term)
 
     def update_dis(self, gen,real_state):
-        """
-        Discriminatorの各パラメータ(alpha, beta)を更新する関数
-        
-        Parameters
-            gen        [Generator] Generator
-            real_state [np.matmul] 学習データの量子状態
-    
-        """
+
         # update alpha
         new_alpha = self.alpha + eta * self._grad_alpha(gen,real_state)
 
