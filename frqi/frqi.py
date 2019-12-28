@@ -22,5 +22,11 @@ def frqiEncoder(self, img, target, controls, anc):
 
 QuantumCircuit.frqiEncoder = frqiEncoder
 
-def frqiDecoder(self, result, origin_img):
+def frqiDecoder(self, target, controls, cbit):
     import numpy as np
+
+    img = np.array(img)
+
+    self.measure(controls.insert(0, target),cbit)
+
+    # maybe will use sub_qc
