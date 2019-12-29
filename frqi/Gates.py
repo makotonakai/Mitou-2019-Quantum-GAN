@@ -25,7 +25,7 @@ def rmcry(self, angle, bin, target, controls, anc):
         assert len(bin) == len(controls), "error"
         assert len(bin) > 5, "ERROR"
 
-        clist = [controls[i] for i in range(len(bin)) if bin[i] == "0"]
+        clist = [controls[-i-1] for i in range(len(bin)) if bin[i] == "0"]
         size = len(controls)
 
         self.x(clist)
