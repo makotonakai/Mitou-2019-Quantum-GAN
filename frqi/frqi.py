@@ -2,6 +2,15 @@ from qiskit import QuantumCircuit
 import Gates
 
 def frqiEncoder(self, img, target, controls, anc):
+    '''
+    qc.frqiEncoder(...)のように使う。
+
+    img (array): 画像の配列
+    target (Qubit): target qubit
+    controls (list[Qubit]): control qubits
+    anc (Qubit): Ancillary qubit
+    '''
+
     import numpy as np
 
     img = np.array(img)
@@ -23,6 +32,16 @@ def frqiEncoder(self, img, target, controls, anc):
 QuantumCircuit.frqiEncoder = frqiEncoder
 
 def frqiDecoder(self, img, backend, shots, target, controls, cbit):
+    '''
+    generated_img = qc.frqiDecoder(...)のように使う。
+
+    img (array): オリジナルの画像の配列
+    backend: e.g. Aer.get_backend('qasm_simulator')
+    shots: 測定の時のショットの数
+    target (Qubit): target qubit
+    controls (list[Qubit]): control qubits
+    anc (Qubit): Ancillary qubit
+    '''
     import numpy as np
     from qiskit import execute
 
