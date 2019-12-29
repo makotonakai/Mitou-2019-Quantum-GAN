@@ -22,11 +22,29 @@ def frqiEncoder(self, img, target, controls, anc):
 
 QuantumCircuit.frqiEncoder = frqiEncoder
 
-def frqiDecoder(self, target, controls, cbit):
+def frqiDecoder(self, img, backend, shots, target, controls, cbit):
     import numpy as np
+    from qiskit import execute
 
     img = np.array(img)
 
-    self.measure(controls.insert(0, target),cbit)
+    self.measure([target]+controls,cbit)
 
-    # maybe will use sub_qc
+    result = execute(self, backend, shots=shots).result()
+
+    genimg = np.array([])
+
+    #### decode
+    for i in range(img.size):
+            try:
+                    genimg = np.append(genimg,[np.sqrt(result.get_counts(self)[format(i, '0'+str(len(controls))+'b')+'1']*2**len(controls)/shots)])
+            except KeyError:
+                    genimg = np.append(genimg,[0.0])
+
+    genimg *= 255.0
+    genimg = genimg.astype('int')
+    genimg = genimg.reshape((len(img),int(img.size/len(img))))
+
+    return genimg
+
+QuantumCircuit.frqiDecoder = frqiDecoder
