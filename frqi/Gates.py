@@ -23,7 +23,7 @@ def mary_4(self, angle, t, c0, c1, c2):
 def rmcry(self, angle, bin, target, controls, anc):
 
         assert len(bin) == len(controls), "error"
-        assert len(bin) > 5, "ERROR"
+        assert len(bin) > 4, "ERROR"
 
         clist = [controls[-i-1] for i in range(len(bin)) if bin[i] == "0"]
         size = len(controls)
