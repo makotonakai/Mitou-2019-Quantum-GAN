@@ -34,14 +34,14 @@ if __name__ == '__main__':
         c = ClassicalRegister(qubit, "c")
         qc = QuantumCircuit(q, anc, c)
 
-        qc.frqiEncoder(x_train[img_num], q[0], q[1:qubit], anc[0])
-        #qc.frqiEncoder(testimg, q[0], q[1:qubit], anc[0])
+        qc.frqiEncoder(x_train[img_num], q[1:qubit], q[0], anc)
+        #qc.frqiEncoder(testimg, q[1:qubit], q[0], anc)
 
         backend_sim = Aer.get_backend('qasm_simulator')
         shots = 1024000
 
-        genimg = qc.frqiDecoder(x_train[img_num], backend_sim, shots, q[0], q[1:11], c)
-        #genimg = qc.frqiDecoder(testimg, backend_sim, shots, q[0], q[1:5], c)
+        genimg = qc.frqiDecoder(x_train[img_num], backend_sim, shots, q[1:11], q[0], c)
+        #genimg = qc.frqiDecoder(testimg, backend_sim, shots, q[1:5], q[0], c)
         plt.imshow(genimg, cmap='gray', vmin=0, vmax=255)
         #plt.savefig('gen_'+str(img_num)+'.png')
         plt.show()

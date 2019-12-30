@@ -1,7 +1,7 @@
 from qiskit import QuantumCircuit
 import Gates
 
-def frqiEncoder(self, img, q_target, q_controls, q_ancilla):
+def frqiEncoder(self, img, q_controls, q_target, q_ancilla):
     '''
     qc.frqiEncoder(...)のように使う。
 
@@ -27,11 +27,11 @@ def frqiEncoder(self, img, q_target, q_controls, q_ancilla):
     # apply c10Ry gates (representing color data)
     for i in range(len(img)):
             if img[i] != 0:
-                    self.rmcry(2 * img[i], format(i, '0'+str(len(q_controls))+'b'), q_target, q_controls, q_ancilla)
+                    self.rmcry(2 * img[i], format(i, '0'+str(len(q_controls))+'b'), q_controls, q_target, q_ancilla)
 
 QuantumCircuit.frqiEncoder = frqiEncoder
 
-def frqiDecoder(self, img, backend, shots, q_target, q_controls, cbit):
+def frqiDecoder(self, img, backend, shots, q_controls, q_target, cbit):
     '''
     generated_img = qc.frqiDecoder(...)のように使う。
 

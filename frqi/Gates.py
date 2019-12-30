@@ -1,70 +1,70 @@
 from qiskit import QuantumCircuit
 
-def mary_4(self, angle, t, c0, c1, c2):
-        self.h(t)
-        self.t(t)
-        self.cx(c0,t)
-        self.tdg(t)
-        self.h(t)
-        self.cx(c1,t)
-        self.rz(angle/4,t)
-        self.cx(c2,t)
-        self.rz(-angle/4,t)
-        self.cx(c1,t)
-        self.rz(angle/4,t)
-        self.cx(c2,t)
-        self.rz(-angle/4,t)
-        self.h(t)
-        self.t(t)
-        self.cx(c0,t)
-        self.tdg(t)
-        self.h(t)
+def mary_4(self, angle, q_control_1, q_control_2, q_control_3, q_target):
+        self.h(q_target)
+        self.t(q_target)
+        self.cx(q_control_1, q_target)
+        self.tdg(q_target)
+        self.h(q_target)
+        self.cx(q_control_2, q_target)
+        self.rz(angle/4, q_target)
+        self.cx(q_control_3, q_target)
+        self.rz(-angle/4, q_target)
+        self.cx(q_control_2, q_target)
+        self.rz(angle/4, q_target)
+        self.cx(q_control_3, q_target)
+        self.rz(-angle/4, q_target)
+        self.h(q_target)
+        self.t(q_target)
+        self.cx(q_control_1, q_target)
+        self.tdg(q_target)
+        self.h(q_target)
 
-def rmcry(self, angle, bin, target, controls, anc):
+def rmcry(self, angle, bin, q_controls, q_target, q_ancilla):
 
-        assert len(bin) == len(controls), "error"
+        assert len(bin) == len(q_controls), "error"
         assert len(bin) > 3, "ERROR"
 
-        clist = [controls[-i-1] for i in range(len(bin)) if bin[i] == "0"]
-        size = len(controls)
+        clist = [q_controls[-i-1] for i in range(len(bin)) if bin[i] == "0"]
+        size = len(q_controls)
 
         self.x(clist)
         
-        self.ccx(controls[0], controls[1], anc)
-        self.x(controls[0:2])
+        self.ccx(q_controls[0], q_controls[1], q_ancilla[0])
+        self.x(q_controls[0:2])
         for i in range(2, size-4+size%2, 2):
-                self.ccx(controls[i], controls[i+1], controls[i-1])
-                self.x(controls[i:i+2])
+                self.ccx(q_controls[i], q_controls[i+1], q_controls[i-1])
+                self.x(q_controls[i:i+2])
         
         if size == 4:
-                self.cx(controls[-1], controls[-3])
-                self.cx(controls[-2], controls[-4])
+                self.cx(q_controls[-1], q_controls[-3])
+                self.cx(q_controls[-2], q_controls[-4])
         elif size%2 == 0:
-                self.rccx(controls[-1], controls[-2], controls[-5])
+                self.rccx(q_controls[-1], q_controls[-2], q_controls[-5])
         else:
-                self.cx(controls[-1], controls[-4])
+                self.cx(q_controls[-1], q_controls[-4])
         
         for i in range(6-size%2, size+1, 2):
-                self.rccx(controls[-i+3], controls[-i+2], controls[-i])
+                self.rccx(q_controls[-i+3], q_controls[-i+2], q_controls[-i])
 
-        self.mary_4(angle, target, anc, controls[0], controls[1])
+        self.mary_4(angle, q_ancilla[0], q_controls[0], q_controls[1], q_target)
 
         for i in reversed(range(6-size%2, size+1, 2)):
-                self.rccx(controls[-i+3], controls[-i+2], controls[-i])
+                self.rccx(q_controls[-i+3], q_controls[-i+2], q_controls[-i])
         
         if size == 4:
-                self.cx(controls[-1], controls[-3])
-                self.cx(controls[-2], controls[-4])
+                self.cx(q_controls[-1], q_controls[-3])
+                self.cx(q_controls[-2], q_controls[-4])
         elif size%2 == 0:
-                self.rccx(controls[-1], controls[-2], controls[-5])
+                self.rccx(q_controls[-1], q_controls[-2], q_controls[-5])
         else:
-                self.cx(controls[-1], controls[-4])
+                self.cx(q_controls[-1], q_controls[-4])
 
         for i in reversed(range(2, size-4+size%2, 2)):
-                self.x(controls[i:i+2])
-                self.rccx(controls[i], controls[i+1], controls[i-1])
-        self.x(controls[0:2])
-        self.ccx(controls[0], controls[1], anc)
+                self.x(q_controls[i:i+2])
+                self.rccx(q_controls[i], q_controls[i+1], q_controls[i-1])
+        self.x(q_controls[0:2])
+        self.ccx(q_controls[0], q_controls[1], q_ancilla[0])
 
         self.x(clist)
 
