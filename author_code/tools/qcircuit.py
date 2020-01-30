@@ -21,6 +21,8 @@ Pauli_X = np.matrix([[0, 1], [1, 0]])  #: Pauli-X matrix
 Pauli_Y = np.matrix([[0, -1j], [1j, 0]])  #: Pauli-Y matrix
 Pauli_Z = np.matrix([[1, 0], [0, -1]])  #: Pauli-Z matrix
 Hadamard = np.matrix([[1, 1], [1, -1]] / np.sqrt(2))  #: Hadamard gate
+T_gate = np.matrix([[1,0],[0,np.exp(1J*np.pi/4)]])
+Tdg_gate = np.matrix([[1,0],[0,np.exp(-1J*np.pi/4)]])
 
 global param_table
 param_table = dict()
@@ -37,9 +39,9 @@ def X(size, qubit):
     matrix = 1
     for i in range(size):
         if i == qubit:
-            matrix = np.kron(matrix,Pauli_X)
+            matrix = np.kron(Pauli_X, matrix)
         else:
-            matrix = np.kron(matrix, I)
+            matrix = np.kron(I, matrix)
     return matrix
 
 
@@ -47,9 +49,9 @@ def Y(size, qubit):
     matrix = 1
     for i in range(size):
         if i == qubit:
-            matrix = np.kron(matrix,Pauli_Y)
+            matrix = np.kron(Pauli_Y, matrix)
         else:
-            matrix = np.kron(matrix, I)
+            matrix = np.kron(I, matrix)
     return matrix
     
     
@@ -57,9 +59,9 @@ def Z(size, qubit):
     matrix = 1
     for i in range(size):
         if i == qubit:
-            matrix = np.kron(matrix,Pauli_Z)
+            matrix = np.kron(Pauli_Z, matrix)
         else:
-            matrix = np.kron(matrix, I)
+            matrix = np.kron(I, matrix)
     return matrix
     
 
@@ -67,11 +69,30 @@ def H(size, qubit):
     matrix = 1
     for i in range(size):
         if i == qubit:
-            matrix = np.kron(matrix,Hadamard)
+            matrix = np.kron(Hadamard, matrix)
         else:
-            matrix = np.kron(matrix, I)
+            matrix = np.kron(I, matrix)
     return matrix
     
+    
+def T(size, qubit):
+    matrix = 1
+    for i in range(size):
+        if i == qubit:
+            matrix = np.kron(T_gate, matrix)
+        else:
+            matrix = np.kron(I, matrix)
+    return matrix
+    
+    
+def Tdg(size, qubit):
+    matrix = 1
+    for i in range(size):
+        if i == qubit:
+            matrix = np.kron(Tdg_gate, matrix)
+        else:
+            matrix = np.kron(I, matrix)
+    return matrix
     
 
 def RX(size, qubit, param, is_grad):
@@ -80,11 +101,11 @@ def RX(size, qubit, param, is_grad):
         if qubit == i:
             if is_grad == False:
                 try:
-                    matrix = np.kron(matrix, linalg.expm(-1J / 2 * param * Pauli_X))
+                    matrix = np.kron(linalg.expm(-1J / 2 * param * Pauli_X), matrix)
                 except Exception:
                     print('param:\n:', param)
             else:
-                matrix = np.kron(matrix, -1J / 2 * Pauli_X * linalg.expm(-1J / 2 * param * Pauli_X))
+                matrix = np.kron(-1J / 2 * Pauli_X * linalg.expm(-1J / 2 * param * Pauli_X), matrix)
         else:
             matrix = np.kron(matrix, I)
 
@@ -97,11 +118,11 @@ def RY(size, qubit, param, is_grad):
         if qubit == i:
             if is_grad == False:
                 try:
-                    matrix = np.kron(matrix, linalg.expm(-1J / 2 * param * Pauli_Y))
+                    matrix = np.kron(linalg.expm(-1J / 2 * param * Pauli_Y), matrix)
                 except Exception:
                     print('param:\n:', param)
             else:
-                matrix = np.kron(matrix, -1J / 2 * Pauli_Y * linalg.expm(-1J / 2 * param * Pauli_Y))
+                matrix = np.kron(-1J / 2 * Pauli_Y * linalg.expm(-1J / 2 * param * Pauli_Y), matrix)
         else:
             matrix = np.kron(matrix, I)
 
@@ -114,11 +135,11 @@ def RZ(size, qubit, param, is_grad):
         if qubit == i:
             if is_grad == False:
                 try:
-                    matrix = np.kron(matrix, linalg.expm(-1J / 2 * param * Pauli_Z))
+                    matrix = np.kron(np.exp(1J/2*param)*linalg.expm(-1J / 2 * param * Pauli_Z), matrix)
                 except Exception:
                     print('param:\n:', param)
             else:
-                matrix = np.kron(matrix, -1J / 2 * Pauli_Z * linalg.expm(-1J / 2 * param * Pauli_Z))
+                matrix = np.kron(np.exp(1J/2*param)*-1J / 2 * Pauli_Z * linalg.expm(-1J / 2 * param * Pauli_Z), matrix)
         else:
             matrix = np.kron(matrix, I)
 
@@ -143,44 +164,44 @@ def CNOT(size, qubit1, qubit2):
 
     # 2進数の長さ
     length = len(bin(size)[2:])
-
-    # 考えられるすべての状態
-    states = [format(num,str(length).zfill(2)+'b').zfill(size) for num in range(2**size)]
     
-    # 制御量子ビットが1のすべての状態(2進数方式)
+#     考えられるすべての状態
+    states = [format(num,str(length).zfill(2)+'b').zfill(size)[::-1] for num in range(2**size)]
+     
+#     制御量子ビットが1のすべての状態(2進数方式)
     controlled_states = [state for state in states if state[qubit1]=='1']
     
-    # 上の文字列を数値にした時の状態(整数)
-    # 制御されるすべての状態
+#     上の文字列を数値にした時の状態(整数)
+#     制御されるすべての状態
     target_states = []
     
     for state in controlled_states:
     
-    # target qubitが0の時、1に反転させる
+#     target qubitが0の時、1に反転させる
         if state[qubit2] == '0':
           state_list = list(state)
           state_list[qubit2] = '1'
           target_str = "".join(state_list)
           
-    # target qubitが1の時、0に反転させる
+#     target qubitが1の時、0に反転させる
         else:
           state_list = list(state)
           state_list[qubit2] = '0'
-          target_str = "".join(state_list)
-          
-    target_states.append(target_str)
-    
-    # #(2**nqubits)^2の正方行列
+          target_str = "".join(state_list)      
+        target_states.append(target_str)
+        
+#     
+#     #(2**nqubits)^2の正方行列
     matrix = Identity(size)
     matrix = np.array(matrix)
-    
+#     
     for control, target in zip(controlled_states, target_states):
-        cont_int = int(control, 2)
-        tar_int = int(target, 2)
-        matrix[cont_int][cont_int] = 0
-        matrix[cont_int][tar_int] = 1
-        matrix[tar_int][cont_int] = 1
-        matrix[tar_int][tar_int] = 0
+        cont_idx = states.index(control)
+        tar_idx = states.index(target)
+        matrix[cont_idx][cont_idx] = 0
+        matrix[cont_idx][tar_idx] = 1
+        matrix[tar_idx][cont_idx] = 1
+        matrix[tar_idx][tar_idx] = 0
 
     return np.matrix(matrix)
     
@@ -282,6 +303,12 @@ class Quantum_Gate:
             
         elif (self.name == "H"):
             return H(size, self.qubit1)
+            
+        elif (self.name == "T"):
+            return T(size, self.qubit1)
+            
+        elif (self.name == "Tdg"):
+            return Tdg(size, self.qubit1)
 
         elif (self.name == "CNOT"):
             return CNOT(size, self.qubit1, self.qubit2)

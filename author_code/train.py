@@ -4,106 +4,48 @@
     training_pure_state.py: training process of qwgan for pure state
 
 """
-import time
 from datetime import datetime
+from qiskit import *
+import time
+
 from model.model_pure import Generator, Discriminator, compute_fidelity, compute_cost, get_zero_state
 from tools.plot_hub import plt_fidelity_vs_iter
+from tools.utils import save_model, train_log
 from tools.qcircuit import *
 import config_pure as cf
-from tools.utils import save_model, train_log
+
+from frqi.frqi import *
+from generator.circuit import *
+
 
 np.random.seed()
 size = cf.system_size
 
-def get_real_matrix():
-    matrix = np.eye(2**size)
-    matrix = np.matmul(H(size,1), matrix)
-    matrix = np.matmul(H(size,2), matrix)
-    matrix = np.matmul(H(size,0), matrix)
-    matrix = np.matmul(X(size,1), matrix)
-    matrix = np.matmul(X(size,2), matrix)
-    matrix = np.matmul(RZ(size,0,np.pi/4,False), matrix)
-    matrix = np.matmul(CNOT(size,1,0), matrix)
-    matrix = np.matmul(RZ(size,0,-np.pi/4,False), matrix)
-    matrix = np.matmul(CNOT(size,2,0), matrix)
-    matrix = np.matmul(RZ(size,0,np.pi/4,False), matrix)
-    matrix = np.matmul(CNOT(size,1,0), matrix)
-    matrix = np.matmul(RZ(size,0,-np.pi/4,False), matrix)
-    matrix = np.matmul(H(size,0), matrix)
-    matrix = np.matmul(X(size,1), matrix)
-    matrix = np.matmul(X(size,2), matrix)
-    matrix = np.matmul(X(size,2), matrix)
-    matrix = np.matmul(H(size,0), matrix)
-    matrix = np.matmul(RZ(size,0,np.pi/4,False), matrix)
-    matrix = np.matmul(CNOT(size,1,0), matrix)
-    matrix = np.matmul(RZ(size,0,-np.pi/4,False), matrix)
-    matrix = np.matmul(CNOT(size,2,0), matrix)
-    matrix = np.matmul(RZ(size,0,np.pi/4,False), matrix)
-    matrix = np.matmul(CNOT(size,1,0), matrix)
-    matrix = np.matmul(X(size,2), matrix)
-    matrix = np.matmul(CNOT(size,1,0), matrix)
-    matrix = np.matmul(RZ(size,0,-np.pi/4,False), matrix)
-    matrix = np.matmul(H(size,0), matrix)
-    matrix = np.matmul(X(size,2), matrix)
-    return matrix
-
-def construct_qcircuit(qc,size):
-    '''
-        the function to construct quantum circuit of generator
-    :param qc:
-    :param size:
-    :return:
-    '''
-    qc.add_gate(Quantum_Gate("H", 0))
-    qc.add_gate(Quantum_Gate("H", 1))
-    qc.add_gate(Quantum_Gate("H", 2))
-    qc.add_gate(Quantum_Gate("X", 1))
-    qc.add_gate(Quantum_Gate("X", 2))
-    qc.add_gate(Quantum_Gate("RZ", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("CNOT", 1, 0))
-    qc.add_gate(Quantum_Gate("RZ", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("CNOT", 2, 0))
-    qc.add_gate(Quantum_Gate("RZ", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("CNOT", 1, 0))
-    qc.add_gate(Quantum_Gate("H", 0))
-    qc.add_gate(Quantum_Gate("X", 1))
-    qc.add_gate(Quantum_Gate("X", 0))
-    qc.add_gate(Quantum_Gate("X", 0))
-    qc.add_gate(Quantum_Gate("H", 0))
-    qc.add_gate(Quantum_Gate("RZ", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("CNOT", 1, 0))
-    qc.add_gate(Quantum_Gate("RZ", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("CNOT", 2, 0))
-    qc.add_gate(Quantum_Gate("RZ", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("CNOT", 1, 0))
-    qc.add_gate(Quantum_Gate("X", 2))
-    qc.add_gate(Quantum_Gate("CNOT", 1, 0))
-    qc.add_gate(Quantum_Gate("RZ", 0, angle=0.5000 * np.pi))
-    qc.add_gate(Quantum_Gate("H", 0))
-    qc.add_gate(Quantum_Gate("X", 2))
-
-    theta = np.random.random(len(qc.gates))
-    for i in range(len(qc.gates)):
-        qc.gates[i].angle = theta[i]
-
-    return qc
 
 def main():
 
-    zero_state = get_zero_state(size)
+    # 生成したい画像
+    img = [[0,0], [255, 255]]
 
+    # 各ステップのフィデリティー
     fidelities = list()
+    
+    #各ステップのコスト関数
     losses = list()
 
-    angle = np.random.randint(1, 10, size=[size, 3])
-    matrix = get_real_matrix()
-    real_state = np.matmul(matrix, zero_state)
-
-    # define generator
+    # 学習する量子状態 関数get_real_stateは ./frqi/frqi.pyをご覧下さい
+    real_state = get_real_state2(QuantumCircuit(size), img)
+    
+    # Generator
+    zero_state = get_zero_state(size)
     gen = Generator(size)
-    gen.set_qcircuit(construct_qcircuit(gen.qc,size))
+    
+    # Generatorの量子回路を設置する　関数circ_encoder2に関しては ./generator/circuit.py,./generator/gates.pyを
+    # ご覧下さい 
+    gen.set_qcircuit(circ_encoder2(gen.qc, img))
 
-    # define discriminator
+    
+    # Discriminator
     herm = [I, Pauli_X, Pauli_Y, Pauli_Z]
 
     dis = Discriminator(herm, size)
@@ -115,6 +57,7 @@ def main():
     while(compute_fidelity(gen,zero_state,real_state)<0.001):
         gen.reset_angles()
 
+    # 学習
     while(f < 0.99):
         starttime = datetime.now()
         for iter in range(cf.epochs):

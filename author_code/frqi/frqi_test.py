@@ -6,17 +6,17 @@ from qiskit import execute, Aer, BasicAer
 from qiskit.aqua.circuits.gates.relative_phase_toffoli import rccx, rcccx
 import numpy as np
 import random
-import keras
-from keras.models import Sequential
-from keras.layers import Dense, Activation
-from keras.datasets import mnist
-import matplotlib.pyplot as plt
-from sklearn.metrics import mean_squared_error, mean_absolute_error, mutual_info_score, r2_score
+# import keras
+# from keras.models import Sequential
+# from keras.layers import Dense, Activation
+# from keras.datasets import mnist
+# import matplotlib.pyplot as plt
+# from sklearn.metrics import mean_squared_error, mean_absolute_error, mutual_info_score, r2_score
 
 import frqi
 
 if __name__ == '__main__':
-        (x_train, y_train), (x_test, y_test) = mnist.load_data()
+#         (x_train, y_train), (x_test, y_test) = mnist.load_data()
         img_num = 0
 
         testimg = [[255,255,255,255], [0, 0, 0, 0], [255, 255, 255, 255], [0, 0, 0, 0]]
@@ -28,7 +28,7 @@ if __name__ == '__main__':
         backends = Aer.backends()
         #print("Aer backends:",backends)
 
-        qubit = 11
+        qubit = 5
         q = QuantumRegister(qubit, "q")
         anc = QuantumRegister(1, "anc")
         c = ClassicalRegister(qubit, "c")
@@ -40,8 +40,9 @@ if __name__ == '__main__':
         backend_sim = Aer.get_backend('qasm_simulator')
         shots = 1024000
 
-        genimg = qc.frqiDecoder(x_train[img_num], backend_sim, shots, q[1:11], q[0], c)
-        #genimg = qc.frqiDecoder(testimg, backend_sim, shots, q[1:5], q[0], c)
-        plt.imshow(genimg, cmap='gray', vmin=0, vmax=255)
+#         genimg = qc.frqiDecoder(x_train[img_num], backend_sim, shots, q[1:11], q[0], c)
+        genimg = qc.frqiDecoder(testimg, backend_sim, shots, q[1:5], q[0], c)
+        print(genimg)
+#         plt.imshow(genimg, cmap='gray', vmin=0, vmax=255)
         #plt.savefig('gen_'+str(img_num)+'.png')
         plt.show()
