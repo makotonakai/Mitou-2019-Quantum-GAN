@@ -5,7 +5,9 @@
 
 """
 from datetime import datetime
+from PIL import Image
 from qiskit import *
+import matplotlib.pyplot as plt
 import time
 
 from model.model_pure import Generator, Discriminator, compute_fidelity, compute_cost, get_zero_state
@@ -34,7 +36,7 @@ def main():
     losses = list()
 
     # 学習する量子状態 関数get_real_stateは ./frqi/frqi.pyをご覧下さい
-    real_state = get_real_state2(QuantumCircuit(size), img)
+    real_state = get_real_state2(QuantumCircuit(size), img).T
     
     # Generator
     zero_state = get_zero_state(size)
@@ -100,7 +102,15 @@ def main():
     
     fidelities[:]=[]
     losses[:]=[]
-    print("end")
+
+    
+    real_matrix = frqiDecoder2(real_state)
+    fake_matrix = frqiDecoder2(gen.getState())
+    
+    real_image = Image.fromarray(real_matrix)
+    real_image.save('real_image.png')
+#     plt.imsave('real_img.jpg', real_matrix, cmap='gray')
+
 
 if __name__ == '__main__':
 

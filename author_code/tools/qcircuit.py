@@ -107,7 +107,7 @@ def RX(size, qubit, param, is_grad):
             else:
                 matrix = np.kron(-1J / 2 * Pauli_X * linalg.expm(-1J / 2 * param * Pauli_X), matrix)
         else:
-            matrix = np.kron(matrix, I)
+            matrix = np.kron(I, matrix)
 
     return matrix
     
@@ -124,7 +124,7 @@ def RY(size, qubit, param, is_grad):
             else:
                 matrix = np.kron(-1J / 2 * Pauli_Y * linalg.expm(-1J / 2 * param * Pauli_Y), matrix)
         else:
-            matrix = np.kron(matrix, I)
+            matrix = np.kron(I, matrix)
 
     return matrix
 
@@ -141,7 +141,7 @@ def RZ(size, qubit, param, is_grad):
             else:
                 matrix = np.kron(np.exp(1J/2*param)*-1J / 2 * Pauli_Z * linalg.expm(-1J / 2 * param * Pauli_Z), matrix)
         else:
-            matrix = np.kron(matrix, I)
+            matrix = np.kron(I, matrix)
 
     return matrix
     
@@ -259,6 +259,12 @@ class Quantum_Gate:
             
         elif (self.name == "H"):
             return H(size, self.qubit1)
+            
+        elif (self.name == "T"):
+            return T(size, self.qubit1)
+            
+        elif (self.name == "Tdg"):
+            return Tdg(size, self.qubit1)
 
         elif (self.name == "CNOT"):
             return CNOT(size, self.qubit1, self.qubit2)

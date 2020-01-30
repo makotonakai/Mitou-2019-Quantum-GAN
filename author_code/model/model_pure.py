@@ -94,6 +94,12 @@ class Generator:
 
     def getGen(self):
         return self.qc.get_mat_rep()
+        
+    def getState(self):
+        G = self.getGen()
+        zero_state = get_zero_state(self.size)
+        fake_state = np.matmul(G , zero_state)
+        return fake_state
 
     def _grad_theta(self, dis, real_state):
 

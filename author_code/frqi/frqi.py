@@ -25,12 +25,12 @@ def get_real_state2(circuit, img):
 
 # 2x2の画像のデコード  
 def frqiDecoder2(vec):
-
     arr = np.array([])
     idx_list = [1,5,3,7]
     for idx in idx_list:
         arr = np.append(arr, int(abs(vec[idx])*255/0.5))
     color_matrix = arr.reshape(2,2)
+    
     return color_matrix
   
 # 4x4以上の画像のエンコード  

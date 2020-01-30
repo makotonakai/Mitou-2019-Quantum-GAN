@@ -21,7 +21,7 @@ cst3 = (s / 2) ** 2
 
 # learning scripts
 initial_eta = 1e-1
-epochs = 200
+epochs = 120
 decay = False
 eta = initial_eta
 step_size = 1

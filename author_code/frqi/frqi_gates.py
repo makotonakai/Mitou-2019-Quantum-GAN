@@ -39,7 +39,7 @@ def mary2(circ, controls, angle, t, c0, c1):
 
 
 # 4x4以上の画像のエンコードに使うゲート
-def mary_4(circ, angle, q_control_1, q_control_2, q_control_3, q_target):
+def mary4(circ, angle, q_control_1, q_control_2, q_control_3, q_target):
   circ.h(q_target)
   circ.t(q_target)
   circ.cx(q_control_1, q_target)

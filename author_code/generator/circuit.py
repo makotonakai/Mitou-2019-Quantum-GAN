@@ -25,3 +25,33 @@ def circ_encoder2(circ, img):
         circ.gates[i].angle = theta[i]
 
     return circ
+    
+    
+def circ_frqiEncoder(circ, img, q_controls, q_target, q_ancilla):
+    '''
+    qc.frqiEncoder(...)のように使う。
+    img (array): 画像の配列
+    q_target (Qubit): target qubit
+    q_controls (list[Qubit]): control qubits
+    q_ancilla (Qubit): Ancillary qubit
+    '''
+    img = np.array(img)
+    assert len(q_controls) >= np.log2(img.size), "You need more control qubits."
+
+    img = img.reshape(img.size)
+    img = img.astype('float64')
+    img /= 255.0
+    img = np.arcsin(img)
+
+    # apply hadamard gates
+    for c in q_controls:
+        circ.add_gate(Quantum_Gate("H", c))
+  # circ.h(q_controls)
+
+  # apply c10Ry gates (representing color data)
+    for i in range(len(img)):
+        if img[i] != 0:
+            circ_rmcry(circ, 2 * img[i], format(i, '0'+str(len(q_controls))+'b'), q_controls, q_target, q_ancilla)
+#       rmcry(circ, 2 * img[i], format(i, '0'+str(len(q_controls))+'b'), q_controls, q_target, q_ancilla)
+
+    return circ
