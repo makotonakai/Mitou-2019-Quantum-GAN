@@ -89,7 +89,7 @@ def rmcry(circ, angle, binary, q_controls, q_target, q_ancilla):
   for i in range(6-size%2, size+1, 2):
     circ.rccx(q_controls[-i+3], q_controls[-i+2], q_controls[-i])
 
-  mary_4(circ, angle, q_ancilla[0], q_controls[0], q_controls[1], q_target)
+  mary4(circ, angle, q_ancilla[0], q_controls[0], q_controls[1], q_target)
 
   for i in reversed(range(6-size%2, size+1, 2)):
     circ.rccx(q_controls[-i+3], q_controls[-i+2], q_controls[-i])

@@ -27,7 +27,12 @@ size = cf.system_size
 def main():
 
     # 生成したい画像
-    img = [[0,0], [255, 255]]
+    testimg = [[255,255,255,255], [0, 0, 0, 0], [255, 255, 255, 255], [0, 0, 0, 0]]
+    
+    nqubits = 6
+    control = [num for num in range(1,5)]
+    target = 0
+    anc = [nqubits-1]
 
     # 各ステップのフィデリティー
     fidelities = list()
@@ -35,18 +40,17 @@ def main():
     #各ステップのコスト関数
     losses = list()
 
-    # 学習する量子状態 関数get_real_stateは ./frqi/frqi.pyをご覧下さい
-    real_state = get_real_state2(QuantumCircuit(size), img).T
+    # 学習する量子状態 関数get_real_state4は ./frqi/frqi.pyをご覧下さい
+    real_state = get_real_state4(QuantumCircuit(nqubits), testimg, control, target, anc).T
     
     # Generator
     zero_state = get_zero_state(size)
     gen = Generator(size)
     
-    # Generatorの量子回路を設置する　関数circ_encoder2に関しては ./generator/circuit.py,./generator/gates.pyを
-    # ご覧下さい 
-    gen.set_qcircuit(circ_encoder2(gen.qc, img))
+    # Generatorの量子回路を設置する　関数circ_frqiEncoderに関しては ./generator/circuit.py及び
+    #./generator/gates.pyをご覧下さい 
+    gen.set_qcircuit(circ_frqiEncoder(gen.qc, testimg, control, target, anc))
 
-    
     # Discriminator
     herm = [I, Pauli_X, Pauli_Y, Pauli_Z]
 

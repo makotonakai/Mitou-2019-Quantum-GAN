@@ -3,6 +3,7 @@ from tools.qcircuit import *
 from frqi.frqi import *
 from model.model_pure import *
 from generator.gates import *
+from generator.circuit import *
 
 from qiskit import * 
 
@@ -17,16 +18,26 @@ testimg = [[255,255,255,255], [0, 0, 0, 0], [255, 255, 255, 255], [0, 0, 0, 0]]
 #plt.show()
 
 
-qubit = 6
+nqubits = 6
 control = [num for num in range(1,5)]
 target = 0
-anc = qubit-1
+anc = [nqubits-1]
 
-gen = Generator(size)
-qc_fake = gen.qc
-qc_fake = circ_frqiEncoder(qc_fake, testimg, control, target, anc)
-fake_state = gen.getState()
-print(fake_state)
+# real image encoding
+qc = QuantumCircuit(nqubits)
+state = frqiEncoder4(qc, testimg, control, target, anc)
+genimg = frqiDecoder4(state, testimg, control)
+print(genimg)
+
+
+# gen = Generator(nqubits)
+# qc_fake = gen.qc
+# qc_fake = circ_frqiEncoder(qc_fake, testimg, control, target, anc)
+# fake_state = gen.getState()
+# print(fake_state)
+
+
+
 
 
 

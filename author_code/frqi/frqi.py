@@ -18,10 +18,12 @@ def frqiEncoder2(circuit, img):
   outputstate = get_vector(circuit)
   return outputstate
   
+  
 # 2x2の画像のエンコード
 def get_real_state2(circuit, img):
     outputstate = frqiEncoder2(circuit, img)
     return np.matrix(outputstate)
+    
 
 # 2x2の画像のデコード  
 def frqiDecoder2(vec):
@@ -32,6 +34,7 @@ def frqiDecoder2(vec):
     color_matrix = arr.reshape(2,2)
     
     return color_matrix
+    
   
 # 4x4以上の画像のエンコード  
 def frqiEncoder4(circ, img, q_controls, q_target, q_ancilla):
@@ -57,9 +60,18 @@ def frqiEncoder4(circ, img, q_controls, q_target, q_ancilla):
     for i in range(len(img)):
         if img[i] != 0:
             rmcry(circ, 2 * img[i], format(i, '0'+str(len(q_controls))+'b'), q_controls, q_target, q_ancilla)
+            
+    outputstate = get_vector(circ)
+    return outputstate
+    
+    
+# 2x2の画像のエンコード
+def get_real_state4(circ, img, q_controls, q_target, q_ancilla):
+    outputstate = frqiEncoder4(circ, img, q_controls, q_target, q_ancilla)
+    return np.matrix(outputstate)
 
 # 4x4の画像のデコード 
-def frqiDecoder4(circ, img, q_controls):
+def frqiDecoder4(vec, img, q_controls):
     '''
     generated_img = qc.frqiDecoder(...)のように使う。
     img (array): オリジナルの画像の配列
@@ -70,13 +82,12 @@ def frqiDecoder4(circ, img, q_controls):
     cbit: Classical bit
     '''
     img = np.array(img)
-    vector = get_vector(circ)
     genimg = np.array([])
 
   #### decode
     for i in range(img.size):
         try:
-            genimg = np.append(genimg, [abs(vector[int(format(i, '0'+str(len(q_controls))+'b')+'1',2)]*np.sqrt(2**len(q_controls)))])
+            genimg = np.append(genimg, [abs(vec[int(format(i, '0'+str(len(q_controls))+'b')+'1',2)]*np.sqrt(2**len(q_controls)))])
         except:
             genimg = np.append(genimg,[0.0])
 
