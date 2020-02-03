@@ -126,7 +126,7 @@ def circ_rmcry(circ, theta, binary, q_controls, q_target, q_ancilla):
         RCCX(circ, q_controls[-1], q_controls[-2], q_controls[-5])
         # circ.rccx(q_controls[-1], q_controls[-2], q_controls[-5])
     else:
-        circ.add_gate(Quantum_Gate("CNOT", q_controls[-1], q_controls[-4])  
+        circ.add_gate(Quantum_Gate("CNOT", q_controls[-1], q_controls[-4]))  
 #     circ.cx(q_controls[-1], q_controls[-4])
 
 
@@ -157,7 +157,7 @@ def circ_rmcry(circ, theta, binary, q_controls, q_target, q_ancilla):
 # 
     for i in reversed(range(2, size-4+size%2, 2)):
         for j in range(i, i+2):
-            circ.add_gate(Quantum_Gate("X", q_controls[j])
+            circ.add_gate(Quantum_Gate("X", q_controls[j]))
         RCCX(circ, q_controls[i], q_controls[i+1], q_controls[i-1])
 #     circ.x(q_controls[i:i+2])
 #     circ.rccx(q_controls[i], q_controls[i+1], q_controls[i-1])
