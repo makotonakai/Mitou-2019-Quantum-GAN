@@ -17,7 +17,6 @@ def plt2png():
     buf.close()
     return s
 
-
 # html表示view
 def index(request):
     form = ContactForm()
@@ -39,8 +38,14 @@ def index(request):
             return render(request, 'qgan/result.html', {'form': form})
     return render(request, 'qgan/index.html', hoge)
 
+import sys
+sys.path.append("../../../qwgan_code")
+import train as qwgan
+
 #画像埋め込み用view
 def img_plot(request):
+    global image
+    image = qwgan.main(image)
     plt.tick_params(labelbottom=False,labelleft=False,labelright=False,labeltop=False)
     plt.tick_params(bottom=False,left=False,right=False,top=False)
     plt.imshow(image, cmap='gray')

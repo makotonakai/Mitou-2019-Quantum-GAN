@@ -1,10 +1,9 @@
-#!/usr/bin/env python
-
 """
     model_pure.py: the model of generator and discriminator(pure states)
 
 """
-
+import sys
+sys.path.append('.')
 from scipy.linalg import expm
 import numpy as np
 from config_pure import *
@@ -15,7 +14,7 @@ np.random.seed()
 
 def compute_cost(gen, dis, real_state):
     '''
-        calculate the loss
+    calculate the loss
     :param gen: generator(Generator)
     :param dis: discriminator(Discriminator)
     :return:
@@ -65,7 +64,7 @@ def compute_cost(gen, dis, real_state):
 
 def compute_fidelity(gen, state, real_state):
     '''
-        calculate the fidelity between target state and fake state
+    calculate the fidelity between target state and fake state
     :param gen:   generator(Generator)
     :param state: vector(array), input state
     :return:
@@ -221,7 +220,7 @@ class Discriminator:
 
     def getPhi(self):
         '''
-            get matrix representation of fake part of discriminator
+        get matrix representation of fake part of discriminator
         :param beta:
                     parameters of psi(ndarray):size = [num_qubit, 4]
                     0: I

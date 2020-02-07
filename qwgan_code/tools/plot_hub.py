@@ -1,12 +1,8 @@
-#!/usr/bin/env python
-
 """
-    plot_hub.py: the plot tool
-
+plot_hub.py: the plot tool
 """
 
 import matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 

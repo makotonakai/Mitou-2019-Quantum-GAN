@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
     training_pure_state.py: training process of qwgan for pure state
 
@@ -11,7 +9,7 @@ import matplotlib.pyplot as plt
 import time
 
 from model import Generator, Discriminator, compute_fidelity, compute_cost
-from tools.plot_hub import plt_fidelity_vs_iter
+#from tools.plot_hub import plt_fidelity_vs_iter
 from tools.utils import get_zero_state, save_model, train_log
 from tools.qcircuit import *
 from tools.frqi_circuit import *
@@ -56,7 +54,7 @@ def main(img):
 
     # optional term, this is for controlling the initial fidelity is small.
     # while(compute_fidelity(gen,zero_state,real_state)>0.5):
-    #     gen.reset_angles()
+    # ¥gen.reset_angles()
     while(compute_fidelity(gen,zero_state,real_state)<0.001):
         gen.reset_angles()
 
@@ -64,17 +62,17 @@ def main(img):
     while(f < 0.99):
         starttime = datetime.now()
         for iter in range(cf.epochs):
-           #  print("==================================================")
-#             print("Epoch {}, Step_size {}".format(iter + 1, cf.eta))
+            # print("==================================================")
+            # print("Epoch {}, Step_size {}".format(iter + 1, cf.eta))
 
             if iter % cf.step_size == 0:
                 # Generator gradient descent
                 gen.update_gen(dis,real_state)
-#                 print("Loss after generator step: {}".format(compute_cost(gen, dis,real_state)))
+            # print("Loss after generator step: {}".format(compute_cost(gen, dis,real_state)))
 
             # Discriminator gradient ascent
             dis.update_dis(gen,real_state)
-#             print("Loss after discriminator step: {}".format(compute_cost(gen, dis,real_state)))
+            # print("Loss after discriminator step: {}".format(compute_cost(gen, dis,real_state)))
 
             cost = compute_cost(gen, dis, real_state)
             fidelity = compute_fidelity(gen, zero_state, real_state)
@@ -83,7 +81,7 @@ def main(img):
             fidelities.append(fidelity)
 
             # print("Fidelity between real and fake state: {}".format(fidelity))
-#             print("==================================================")
+            # print("==================================================")
 
             if iter % 10 == 0:
                 endtime = datetime.now()
@@ -97,7 +95,7 @@ def main(img):
 
         f = compute_fidelity(gen,zero_state,real_state)
 
-    plt_fidelity_vs_iter(fidelities, losses, cf, indx=0)
+    #plt_fidelity_vs_iter(fidelities, losses, cf, indx=0)
     save_model(gen, cf.model_gen_path)
     save_model(dis, cf.model_dis_path)
     
@@ -112,8 +110,9 @@ def main(img):
 
 
 if __name__ == '__main__':
-
-    #画像入れて
-#     genimg =  main()
-
-
+    img = [[255, 255, 255, 255],
+            [0, 0, 0, 0],
+            [255, 255, 255, 255],
+            [0, 0, 0, 0],]
+    plt.imshow(main(img))
+    plt.show()
