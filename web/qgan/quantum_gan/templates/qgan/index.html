@@ -4,10 +4,26 @@
   <head>
     <meta charset="utf-8">
     <title>qgan</title>
+    <script>
+      function run(){
+        let result = document.getElementById("result")
+        result.innerHTML = "<img src=\"{% url 'quantum_gan:img_plot' %}\" alt=\"\">"
+      }
+    </script>
   </head>
 
   <body>
-    <img src="{% url 'quantum_gan:img_plot' %}" alt="">
+    <h1>Quantum Wasserstein GAN</h1>
+    <form action="" method="POST">
+      {% csrf_token %}
+      <table>
+        <tr><td>{{form.color0}}</td><td>{{form.color1}}</td><td>{{form.color2}}</td><td>{{form.color3}}</td></tr>
+        <tr><td>{{form.color4}}</td><td>{{form.color5}}</td><td>{{form.color6}}</td><td>{{form.color7}}</td></tr>
+        <tr><td>{{form.color8}}</td><td>{{form.color9}}</td><td>{{form.color10}}</td><td>{{form.color11}}</td></tr>
+        <tr><td>{{form.color12}}</td><td>{{form.color13}}</td><td>{{form.color14}}</td><td>{{form.color15}}</td></tr>
+      </table>
+      <button type="submit">送信</button>
+    </form>
   </body>
 
 </html>
