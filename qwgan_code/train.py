@@ -23,11 +23,9 @@ import config_pure as cf
 np.random.seed()
 
 
-def main():
+def main(img):
 
     # 生成したい画像
-    testimg2 = [[0,0],[255,255]]
-    testimg4 = [[255, 255, 255, 255], [0,0,0,0],[255, 255, 255, 255], [0,0,0,0]]
     
     nqubits = 5
 
@@ -38,7 +36,7 @@ def main():
     losses = list()
 
     # 学習する量子状態 関数get_real_state4は ./frqi/frqi.pyをご覧下さい
-    real_state = encode4(testimg4)
+    real_state = encode4(img)
     
     # Generator
     zero_state = get_zero_state(nqubits)
@@ -66,17 +64,17 @@ def main():
     while(f < 0.99):
         starttime = datetime.now()
         for iter in range(cf.epochs):
-            print("==================================================")
-            print("Epoch {}, Step_size {}".format(iter + 1, cf.eta))
+           #  print("==================================================")
+#             print("Epoch {}, Step_size {}".format(iter + 1, cf.eta))
 
             if iter % cf.step_size == 0:
                 # Generator gradient descent
                 gen.update_gen(dis,real_state)
-                print("Loss after generator step: {}".format(compute_cost(gen, dis,real_state)))
+#                 print("Loss after generator step: {}".format(compute_cost(gen, dis,real_state)))
 
             # Discriminator gradient ascent
             dis.update_dis(gen,real_state)
-            print("Loss after discriminator step: {}".format(compute_cost(gen, dis,real_state)))
+#             print("Loss after discriminator step: {}".format(compute_cost(gen, dis,real_state)))
 
             cost = compute_cost(gen, dis, real_state)
             fidelity = compute_fidelity(gen, zero_state, real_state)
@@ -84,8 +82,8 @@ def main():
             losses.append(cost)
             fidelities.append(fidelity)
 
-            print("Fidelity between real and fake state: {}".format(fidelity))
-            print("==================================================")
+            # print("Fidelity between real and fake state: {}".format(fidelity))
+#             print("==================================================")
 
             if iter % 10 == 0:
                 endtime = datetime.now()
@@ -106,17 +104,16 @@ def main():
     fidelities[:]=[]
     losses[:]=[]
     
+    #生成した状態
     fake_state = gen.getState()
     genimg = decode4(fake_state)
 
-    print("end")
-    
-    print("Matrix")
-    print(genimg)
+    return genimg
 
 
 if __name__ == '__main__':
 
-    main()
+    #画像入れて
+#     genimg =  main()
 
 
